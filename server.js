@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
-const consoleTable = require('console.table'); 
-const mysql = require ('mysql12');
+const mysql = require ('mysql2');
 
 //TODO connect to mysql database
 
@@ -14,54 +13,46 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
   );
 
-async function displayDepartments() {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM departments', (err, res) => {
-          if (err) reject(err);
-          resolve(res);
-        });
-      });
-    };
+  function displayDepartments() {
+    console.log("here")
+    db.query('SELECT * FROM department', function (err, results) {
+      if (err) {
+        console.log(err);
+      }
+      console.table(results);
+    });
+  }
 
-async function viewRoles (){
-    return new Promise((resolve, reject) => {
-        connection.query(
-          'SELECT roles.role_id, roles.title, roles.salary, departments.department_name FROM roles INNER JOIN departments ON roles.department_id = departments.department_id',
-          (err, res) => {
-            if (err) reject(err);
-            resolve(res);
-          }
-        );
-      });
-    };
-
-async function viewEmployees(){
-    return new Promise((resolve, reject) => {
-        connection.query(
+function viewRoles (){
+        db.query(
+          'SELECT roles.role_id, roles.title, roles.salary, departments.department_name FROM roles INNER JOIN departments ON roles.department_id = departments.department_id', 
+          function (err,results){
+            console.table(results);
+          })
+        }
+        
+function viewEmployees(){
+db.query(
           `SELECT employees.employee_id, employees.first_name, employees.last_name, roles.title, departments.department_name, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
           FROM employees
           INNER JOIN roles ON employees.role_id = roles.role_id
           INNER JOIN departments ON roles.department_id = departments.department_id
           LEFT JOIN employees manager ON employees.manager_id = manager.employee_id`,
-          (err, res) => {
-            if (err) reject(err);
-            resolve(res);
-          }
-        );
-      });
-    };
-async function addDepartment(){
-    return new Promise((resolve, reject) => {
-        connection.query('INSERT INTO departments SET ?', { department_name: name }, (err, res) => {
+          function (err,results){
+            console.table(results);
+          })
+        }
+
+function addDepartment(){
+    db.query('INSERT INTO departments SET ?', { department_name: name }, (err, res) => {
           if (err) reject(err);
           resolve();
-        });
-      });
-    };
+        })
+      }
 
-async function addRole(){
+function addRole(){
     return new Promise((resolve, reject) => {
-        connection.query(
+        db.query(
           'INSERT INTO roles SET ?',
           { title: title, salary: salary, department_id: departmentId },
           (err, res) => {
@@ -72,9 +63,9 @@ async function addRole(){
       });
     };
 
-async function addEmployee(){
+function addEmployee(){
     return new Promise((resolve, reject) => {
-        connection.query(
+        db.query(
           'INSERT INTO employees SET ?',
           { first_name: firstName, last_name: lastName, role_id: roleId, manager_id: managerId },
           (err, res) => {
@@ -84,9 +75,9 @@ async function addEmployee(){
         );
       });
     };
-async function updateEmployeeRole(){
+function updateEmployeeRole(){
     return new Promise((resolve, reject) => {
-        connection.query(
+        db.query(
           'UPDATE employees SET role_id = ? WHERE employee_id = ?',
           [roleId, employeeId],
           (err, res) => {
@@ -103,9 +94,9 @@ async function handleOptions() {
 		'View All Roles',
 		'View All Employees',
 		'Add a Department',
-        'Add a Role',
-        'Add an Employee',
-        'Update an Employee Role'
+    'Add a Role',
+    'Add an Employee',
+    'Update an Employee Role'
 	]
 	const results = await inquirer.prompt([{
 		message: 'What would you like to do?',
@@ -137,7 +128,7 @@ async function handleOptions() {
     }
 }
 	
-handleOptions();
+
 
 // Function to start the application
 const startApp = async () => {
