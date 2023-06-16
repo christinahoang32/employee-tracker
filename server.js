@@ -14,21 +14,22 @@ const db = mysql.createConnection(
   );
 
   function displayDepartments() {
-    console.log("here")
     db.query('SELECT * FROM department', function (err, results) {
       if (err) {
         console.log(err);
       }
       console.table(results);
     });
+    handleOptions()
   }
-
 function viewRoles (){
+  console.log('testing')
         db.query(
           'SELECT roles.role_id, roles.title, roles.salary, departments.department_name FROM roles INNER JOIN departments ON roles.department_id = departments.department_id', 
           function (err,results){
             console.table(results);
-          })
+          });
+          handleOptions()
         }
         
 function viewEmployees(){
@@ -40,7 +41,8 @@ db.query(
           LEFT JOIN employees manager ON employees.manager_id = manager.employee_id`,
           function (err,results){
             console.table(results);
-          })
+          });
+          handleOptions()
         }
 
 function addDepartment(){
@@ -90,9 +92,9 @@ function updateEmployeeRole(){
 
 async function handleOptions() {
 	const options = [
-		'View ALL Departments',
-		'View All Roles',
-		'View All Employees',
+		'View all Departments',
+		'View all Roles',
+		'View all Employees',
 		'Add a Department',
     'Add a Role',
     'Add an Employee',
@@ -104,25 +106,25 @@ async function handleOptions() {
 		type: 'list',
 		choices: options,
 	}]);
-	if (results.command == 'View All Departments') {
+	if (results.command == 'View all Departments') {
 		displayDepartments();
 		handleOptions();
-	} else if (results == 'View All Roles') {
+	} else if (results.command == 'View all Roles') {
 		viewRoles();
         handleOptions();
-    } else if (results == 'View All Employees'){
+    } else if (results.command == 'View all Employees'){
         viewEmployees();
         handleOptions;
-    } else if (results == 'Add a Department'){
+    } else if (results.command == 'Add a Department'){
         addDepartment();
         handleOptions;
-    } else if (results == 'Add a Role'){
+    } else if (results.command == 'Add a Role'){
         addRole();
         handleOptions;
-    } else if (results == 'Add an Employee'){
+    } else if (results.command == 'Add an Employee'){
         addEmployee();
         handleOptions;
-    } else if (results == 'Update an Employee Role'){
+    } else if (results.command == 'Update an Employee Role'){
         updateEmployeeRole();
         handleOptions
     }
