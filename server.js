@@ -119,16 +119,24 @@ function findAllEmployees() {
     .query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id  FROM employee;");
 }
 
+// function findAllRoles()
+// return db
+// .promise()
+// .query("SELECT role.id, role.title FROM role INNER JOIN department ON role.department_id = department.id;");
+//           let roles = rows;
+//           const roleChoices = roles.map(({title}) => ({
+//           role: title
+//         }));
+       
 
 function addEmployee(){
   findAllEmployees().then(([rows]) => {
     let employees = rows;
-    const employeeChoices = employees.map(({ id, first_name, last_name, role_id, manager_id  }) => ({
-      firstname: first_name,
+    const employeeChoices = employees.map(({ id, first_name, last_name, role_id, manager_id }) => ({
+      name: `${first_name} ${last_name}`,
       value: id,
-      lastname: last_name,
-      roleid: role_id,
-      managerid: manager_id
+      role: title,
+      manager: manager_id
     }));
   inquirer
   .prompt([
@@ -142,15 +150,15 @@ function addEmployee(){
     },
     {
       type: "list",
-      name: "role",
+      name: "roleId",
       message: "What is the employee's role",
-      choices: employeeChoices,
+      choices: roleChoices,
     },
     {
       type: "list",
       name: "manager",
       message: "Who is the employee's manager?",
-      choices: 'Michael Jackson',
+      choices: employeeChoices,
     }
   ])
   .then((res) => {
@@ -158,11 +166,10 @@ function addEmployee(){
     db.query(
       "INSERT INTO employee SET ?",
       {
-        first: res.first_name,
-        last: res.last_name,
-        role: res.role,
-        manager: res.manager
-
+        first: res.first,
+        last: res.last,
+        role_id: res.role,
+        manager_id: res.manager
       },
       function (err, results) {
         if (err) {
@@ -188,6 +195,8 @@ function updateEmployeeRole(){
         );
       });
     };
+
+  
 
 async function handleOptions() {
 	const options = [
