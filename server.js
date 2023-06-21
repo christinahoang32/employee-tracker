@@ -41,16 +41,16 @@ db.query(
           handleOptions()
         }
 
-function addDepartment(){
-    db.query('INSERT INTO department SET ?', { department_name: name }, (err, res) => {
-          if (err) reject(err);
-          resolve();
-        })
-      }
-// Create a new department
-createDepartment(department) {
-  return this.connection.promise().query("INSERT INTO department SET ?", department);
-// add a department
+// function addDepartment(){
+//     db.query('INSERT INTO department SET ?', { department_name: name }, (err, res) => {
+//           if (err) reject(err);
+//           resolve();
+//         })
+//       }
+// // Create a new department
+// createDepartment(department) {
+//   return this.connection.promise().query("INSERT INTO department SET ?", department);
+// // add a department
 
 function addDepartment() {
   prompt([
