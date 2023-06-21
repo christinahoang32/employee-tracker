@@ -40,47 +40,80 @@ db.query(
           });
           handleOptions()
         }
+        function addDepartment() {
+          inquirer.prompt([
+            {
+              name: "name",
+              message: "What is the name of the department?"
+            }
+          ])
+            .then(res => {
+              let name = res;
+              db.query(`INSERT INTO department (name) VALUES('${res.name}') `, function (err, results) {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(`added ${res.name} to the departments`);
+                handleOptions()
+              });
+            })
+        }
 
-// function addDepartment(){
-//     db.query('INSERT INTO department SET ?', { department_name: name }, (err, res) => {
-//           if (err) reject(err);
-//           resolve();
-//         })
-//       }
-// // Create a new department
-// createDepartment(department) {
-//   return this.connection.promise().query("INSERT INTO department SET ?", department);
-// // add a department
+// function addRole(){
+//     return new Promise((resolve, reject) => {
+//         db.query(
+//           'INSERT INTO role SET ?',
+//           { title: title, salary: salary, department_id: departmentId },
+//           (err, res) => {
+//             if (err) reject(err);
+//             resolve();
+//           }
+//         );
+//       });
+//     };
 
-function addDepartment() {
-  prompt([
-    {
-      name: "name",
-      message: "What is the name of the department?"
+    function addRole() {
+      inquirer.prompt([
+        {
+          name: "title",
+          message: "What is the title of the role?"
+        }
+      ])
+        .then(res => {
+          let name = res;
+
+          inquirer.prompt([
+            {
+              name: "salary",
+              message: "What is the salary of the role?"
+            }
+          ]) 
+          .then (res => {
+            let salary = res;
+
+            inquirer.prompt ([
+              {
+                type: 'list',
+                name: 'department',
+                message: 'Which department does the role belong to?:',
+                choices: ['Shoes', 'Women', 'Men', 'Children', 'Household'], 
+              }
+            ])
+            .then (res => {
+              let department = res;
+            } )
+          })
+          db.query( 'INSERT INTO role SET ?',
+          { title: VALUES('${res.title}'), salary: VALUES('${res.salary}'), department_id: VALUES('${res.department}') }, function (err, results) {
+            if (err) {
+              console.log(err);
+            }
+            console.log(`added ${res.title} to the database`);
+            handleOptions()
+          });
+        })
     }
-  ])
-    .then(res => {
-      let name = res;
-      db.createDepartment(name)
-        .then(() => console.log(`Added ${name.name} to the database`))
-        .then(() => loadMainPrompts())
-    })
-}
 
-      
-
-function addRole(){
-    return new Promise((resolve, reject) => {
-        db.query(
-          'INSERT INTO role SET ?',
-          { title: title, salary: salary, department_id: departmentId },
-          (err, res) => {
-            if (err) reject(err);
-            resolve();
-          }
-        );
-      });
-    };
 
 function addEmployee(){
     return new Promise((resolve, reject) => {
