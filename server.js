@@ -201,94 +201,100 @@ function addEmployee() {
 }
 
 function updateEmployeeRole() {
-  inquirer
-    .prompt([
-      type: 'list',
-      name: '',
-      message: "Which employee's role do you want to update?",
-      choices: employeeChoices,
-    ],
-    .then((res) => {
-      let employee = {
-        employee.role_id: roleId,
-        first_name: firstName,
-        last_name: lastName,
-      };
+  findAllRoles().then(([rows]) => {
+    let roles = rows;
+    var roleChoices = roles.map(({ id, title }) => ({
+      name: title,
+      value: id,
+  }));
+    findAllEmployees().then(([rows]) => {
+      let employees = rows;
+      var employeeChoices = employees.map(
+        ({ id, first_name, last_name }) => ({
+          name: `${first_name} ${last_name}`,
+          value: id,
+        })
+      );
 
-    inquirer
-    .prompt([
-      type: 'list',
-      name: '',
-      message: "Which role do you want to assign the selected employee?",
-      choices: roleChoices,
+      inquirer
+        .prompt[
+          {
+            type: 'list',
+            name: 'id',
+            message: "Which employee's role do you want to update?",
+            choices: employeeChoices
+          }, {
+            type: 'list',
+            name: 'roleid',
+            message: "Which role do you want to assign the selected employee?",
+            choices: roleChoices,
+          }
+        ],
+     .then((res) => {
+          return db
+            .promise()
+            .query('UPDATE employee SET role_id = ? where id = ?', [roleid, id]);
+        })
+            .then((res) =>
+              console.log(`Updates employee's role`, res)
+            )
+            .then(() => handleOptions());
+    });
+  });
+  };
+
+
+
+  async function handleOptions() {
+    const options = [
+      'View all Departments',
+      'View all Roles',
+      'View all Employees',
+      'Add a Department',
+      'Add a Role',
+      'Add an Employee',
+      'Update an Employee Role'
     ]
-    .then((res) => {
-      let roleId = res.roleId;
-
-      return db
-      .promise()
-      .query('INSERT INTO employee SET?', employee);
-  })
-  .then(() =>
-    console.log(`Updates employee's role`)
-  )
-  .then(() => handleOptions());
-});
-};
-
-
-
-
-async function handleOptions() {
-  const options = [
-    'View all Departments',
-    'View all Roles',
-    'View all Employees',
-    'Add a Department',
-    'Add a Role',
-    'Add an Employee',
-    'Update an Employee Role'
-  ]
-  const results = await inquirer.prompt([{
-    message: 'What would you like to do?',
-    name: 'command',
-    type: 'list',
-    choices: options,
-  }]);
-  if (results.command == 'View all Departments') {
-    displayDepartments();
-    handleOptions();
-  } else if (results.command == 'View all Roles') {
-    viewRoles();
-    handleOptions();
-  } else if (results.command == 'View all Employees') {
-    viewEmployees();
-    handleOptions;
-  } else if (results.command == 'Add a Department') {
-    addDepartment();
-    handleOptions;
-  } else if (results.command == 'Add a Role') {
-    addRole();
-    handleOptions;
-  } else if (results.command == 'Add an Employee') {
-    addEmployee();
-    handleOptions;
-  } else if (results.command == 'Update an Employee Role') {
-    updateEmployeeRole();
-    handleOptions
+    const results = await inquirer.prompt([{
+      message: 'What would you like to do?',
+      name: 'command',
+      type: 'list',
+      choices: options,
+    }]);
+    if (results.command == 'View all Departments') {
+      displayDepartments();
+      handleOptions();
+    } else if (results.command == 'View all Roles') {
+      viewRoles();
+      handleOptions();
+    } else if (results.command == 'View all Employees') {
+      viewEmployees();
+      handleOptions;
+    } else if (results.command == 'Add a Department') {
+      addDepartment();
+      handleOptions;
+    } else if (results.command == 'Add a Role') {
+      addRole();
+      handleOptions;
+    } else if (results.command == 'Add an Employee') {
+      addEmployee();
+      handleOptions;
+    } else if (results.command == 'Update an Employee Role') {
+      updateEmployeeRole();
+      handleOptions
+    }
   }
-}
 
 
 
-// Function to start the application
-const startApp = async () => {
-  try {
-    await db.connect();
-    handleOptions();
-  } catch (err) {
-    console.error('Error connecting to the database: ', err);
-  }
-};
+  // Function to start the application
+  const startApp = async () => {
+    try {
+      await db.connect();
+      handleOptions();
+    } catch (err) {
+      console.error('Error connecting to the database: ', err);
+    }
+  };
 
-startApp()
+  startApp()
