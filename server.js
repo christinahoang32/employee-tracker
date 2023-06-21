@@ -203,9 +203,9 @@ function addEmployee() {
 function updateEmployeeRole() {
   findAllRoles().then(([rows]) => {
     let roles = rows;
-    var roleChoices = roles.map(({ roleId, title }) => ({
+    var roleChoices = roles.map(({ id, title }) => ({
       name: title,
-      value: roleId,
+      value: id,
     }));
     findAllEmployees().then(([rows]) => {
       let employees = rows;
@@ -234,11 +234,9 @@ function updateEmployeeRole() {
       .then((res) => {
         return db
           .promise()
-          .query('UPDATE employee SET role_id = ? where id = ?', [roleId, id]);
+          .query('UPDATE employee SET role_id = ? where id = ?', [res.roleId, res.id]);
       })
-      .then((res) =>
-        console.log(`Updates employee's role`, res)
-      )
+      .then(() => console.log(`Updated employee's role`))
       .then(() => handleOptions());
   });
 });
