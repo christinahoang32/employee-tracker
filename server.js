@@ -25,7 +25,7 @@ const db = mysql.createConnection(
 function viewRoles (){
   console.log('testing')
         db.query(
-          'SELECT roles.role_id, roles.title, roles.salary, departments.department_name FROM roles INNER JOIN departments ON roles.department_id = departments.department_id', 
+          'SELECT role.id, role.title, role.salary, department.name FROM role INNER JOIN department ON role.department_id = department.id', 
           function (err,results){
             console.table(results);
           });
@@ -34,11 +34,7 @@ function viewRoles (){
         
 function viewEmployees(){
 db.query(
-          `SELECT employees.employee_id, employees.first_name, employees.last_name, roles.title, departments.department_name, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
-          FROM employees
-          INNER JOIN roles ON employees.role_id = roles.role_id
-          INNER JOIN departments ON roles.department_id = departments.department_id
-          LEFT JOIN employees manager ON employees.manager_id = manager.employee_id`,
+  "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
           function (err,results){
             console.table(results);
           });
@@ -46,16 +42,37 @@ db.query(
         }
 
 function addDepartment(){
-    db.query('INSERT INTO departments SET ?', { department_name: name }, (err, res) => {
+    db.query('INSERT INTO department SET ?', { department_name: name }, (err, res) => {
           if (err) reject(err);
           resolve();
         })
       }
+// Create a new department
+createDepartment(department) {
+  return this.connection.promise().query("INSERT INTO department SET ?", department);
+// add a department
+
+function addDepartment() {
+  prompt([
+    {
+      name: "name",
+      message: "What is the name of the department?"
+    }
+  ])
+    .then(res => {
+      let name = res;
+      db.createDepartment(name)
+        .then(() => console.log(`Added ${name.name} to the database`))
+        .then(() => loadMainPrompts())
+    })
+}
+
+      
 
 function addRole(){
     return new Promise((resolve, reject) => {
         db.query(
-          'INSERT INTO roles SET ?',
+          'INSERT INTO role SET ?',
           { title: title, salary: salary, department_id: departmentId },
           (err, res) => {
             if (err) reject(err);
@@ -68,7 +85,7 @@ function addRole(){
 function addEmployee(){
     return new Promise((resolve, reject) => {
         db.query(
-          'INSERT INTO employees SET ?',
+          'INSERT INTO employee SET ?',
           { first_name: firstName, last_name: lastName, role_id: roleId, manager_id: managerId },
           (err, res) => {
             if (err) reject(err);
@@ -80,7 +97,7 @@ function addEmployee(){
 function updateEmployeeRole(){
     return new Promise((resolve, reject) => {
         db.query(
-          'UPDATE employees SET role_id = ? WHERE employee_id = ?',
+          'UPDATE employee SET role_id = ? WHERE employee_id = ?',
           [roleId, employeeId],
           (err, res) => {
             if (err) reject(err);
