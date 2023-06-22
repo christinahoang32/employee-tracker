@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
-//TODO connect to mysql database
+//connect to mysql database
 
 const db = mysql.createConnection(
   {
@@ -13,6 +13,8 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
+// Display Departments
+
 function displayDepartments() {
   db.query('SELECT * FROM department', function (err, results) {
     if (err) {
@@ -20,8 +22,10 @@ function displayDepartments() {
     }
     console.table(results);
   });
-  // handleOptions()
+  handleOptions()
 }
+
+// View Roles
 function viewRoles() {
   console.log('testing')
   db.query(
@@ -29,8 +33,10 @@ function viewRoles() {
     function (err, results) {
       console.table(results);
     });
-  // handleOptions()
+  handleOptions()
 }
+
+// View Employees
 
 function viewEmployees() {
   db.query(
@@ -38,7 +44,7 @@ function viewEmployees() {
     function (err, results) {
       console.table(results);
     });
-  // handleOptions()
+  handleOptions()
 }
 function addDepartment() {
   inquirer.prompt([
@@ -54,7 +60,7 @@ function addDepartment() {
           console.log(err);
         }
         console.log(`added ${res.name} to the departments`);
-        // handleOptions()
+        handleOptions()
       });
     })
 }
@@ -105,8 +111,8 @@ function addRole() {
             if (err) {
               console.log(err);
             }
-            console.log('added ${res.title} to the database');
-            // handleOptions();
+            console.log(`added ${res.title} to the database`);
+            handleOptions();
           }
         );
       });
@@ -193,7 +199,7 @@ function addEmployee() {
                 .then(() =>
                   console.log(`Added ${firstName} ${lastName} to the database`)
                 )
-                // .then(() => handleOptions());
+                .then(() => handleOptions());
             });
           });
       });
@@ -262,25 +268,25 @@ async function handleOptions() {
   }]);
   if (results.command == 'View all Departments') {
     displayDepartments();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'View all Roles') {
     viewRoles();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'View all Employees') {
     viewEmployees();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'Add a Department') {
     addDepartment();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'Add a Role') {
     addRole();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'Add an Employee') {
     addEmployee();
-    handleOptions();
+    // handleOptions();
   } else if (results.command == 'Update an Employee Role') {
     updateEmployeeRole();
-    handleOptions();
+    // handleOptions();
   }
 }
 
