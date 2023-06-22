@@ -20,7 +20,7 @@ function displayDepartments() {
     }
     console.table(results);
   });
-  handleOptions()
+  // handleOptions()
 }
 function viewRoles() {
   console.log('testing')
@@ -29,7 +29,7 @@ function viewRoles() {
     function (err, results) {
       console.table(results);
     });
-  handleOptions()
+  // handleOptions()
 }
 
 function viewEmployees() {
@@ -38,7 +38,7 @@ function viewEmployees() {
     function (err, results) {
       console.table(results);
     });
-  handleOptions()
+  // handleOptions()
 }
 function addDepartment() {
   inquirer.prompt([
@@ -54,7 +54,7 @@ function addDepartment() {
           console.log(err);
         }
         console.log(`added ${res.name} to the departments`);
-        handleOptions()
+        // handleOptions()
       });
     })
 }
@@ -106,7 +106,7 @@ function addRole() {
               console.log(err);
             }
             console.log('added ${res.title} to the database');
-            handleOptions();
+            // handleOptions();
           }
         );
       });
@@ -193,7 +193,7 @@ function addEmployee() {
                 .then(() =>
                   console.log(`Added ${firstName} ${lastName} to the database`)
                 )
-                .then(() => handleOptions());
+                // .then(() => handleOptions());
             });
           });
       });
@@ -268,19 +268,19 @@ async function handleOptions() {
     handleOptions();
   } else if (results.command == 'View all Employees') {
     viewEmployees();
-    handleOptions;
+    handleOptions();
   } else if (results.command == 'Add a Department') {
     addDepartment();
-    handleOptions;
+    handleOptions();
   } else if (results.command == 'Add a Role') {
     addRole();
-    handleOptions;
+    handleOptions();
   } else if (results.command == 'Add an Employee') {
     addEmployee();
-    handleOptions;
+    handleOptions();
   } else if (results.command == 'Update an Employee Role') {
     updateEmployeeRole();
-    handleOptions
+    handleOptions();
   }
 }
 
